@@ -1,9 +1,11 @@
-Python script that plots the output from real time scheduling algorithms.
-
 Esse script foi feito para as atividades de escalonamento em tempo real do OpenEPOS.
 A saída da aplicação deve estar de acordo com o padrão dos arquivos de exemplo que deixei.
 
-# Uso
+## Requisitos
+Python 3
+Matplotlib
+
+## Uso
 Para uma determinada aplicação do EPOS, e.g. rt_rm, execute:
 $ make APPLICATION=rt_rm run > rt_rm_output
 
