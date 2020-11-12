@@ -115,6 +115,8 @@ class OutputRawFile(OutputData):
 class MatPlotter:
     def __init__(self):
         self.data = []
+        plt.rcParams.update({'font.size': 20})
+        plt.rcParams['figure.constrained_layout.use'] = True
 
     def add_data(self, data, label : str = ""):
         self.data.append((data,label))
@@ -125,31 +127,47 @@ class MatPlotter:
                 plt.xlim(x_i,x_s)
             plt.plot(self.data[0][0][0],self.data[0][0][1], 'r.')
             plt.ylabel(self.data[0][1])
-            plt.grid(True)
+            plt.grid(b=True, which='major', color='#909090', linestyle='-')
+            plt.minorticks_on()
+            plt.grid(b=True, which='minor', color='#999999', linestyle='-', alpha=0.2)
 
         elif(len(self.data) ==  2):     
             f, (ax1, ax2) = plt.subplots(2, 1, sharey=True)
             ax1.plot(self.data[0][0][0],self.data[0][0][1], 'r.')
             ax1.set_ylabel(self.data[0][1])
-            ax1.grid(True)
+            ax1.grid(b=True, which='major', color='#909090', linestyle='-')
+            ax1.minorticks_on()
+            ax1.grid(b=True, which='minor', color='#999999', linestyle='-', alpha=0.2)
 
             ax2.plot(self.data[1][0][0],self.data[1][0][1], 'b.')
             ax2.set_ylabel(self.data[1][1])
-            ax2.grid(True)
+            ax2.grid(b=True, which='major', color='#909090', linestyle='-')
+            ax2.minorticks_on()
+            ax2.grid(b=True, which='minor', color='#999999', linestyle='-', alpha=0.3)
 
             if(x_s != 0):
                 ax1.set_xlim(x_i,x_s) 
                 ax2.set_xlim(x_i,x_s)
 
-        plt.yticks((1,2,3),('c','b','a')) 
+        plt.yticks((1,2,3),('c','b','a'))        
+        MatPlotter.maximize()
 
     def show(self):
         plt.show()
 
+    def maximize():
+        plot_backend = plt.get_backend()
+        mng = plt.get_current_fig_manager()
+        if plot_backend == 'TkAgg':
+            mng.resize(*mng.window.maxsize())
+        elif plot_backend == 'wxAgg':
+            mng.frame.Maximize(True)
+        elif plot_backend == 'Qt4Agg':
+            mng.window.showMaximized()
+        elif plot_backend == 'Qt5Agg':
+            mng.window.showMaximized()
 
-if __name__=="__main__":
-    plt.rcParams.update({'font.size': 22})
-    
+if __name__=="__main__":    
     f_rm = OutputRawFile("rt_rm_output")
     f_edf = OutputRawFile("rt_edf_output")
 
@@ -163,8 +181,8 @@ if __name__=="__main__":
     plot.plot(0,500)
     plot.show()
 
-    plot.plot(3000,3500)
+    plot.plot(5800,6300)
     plot.show()
 
-    plot.plot(5900,6060)
+    plot.plot(7800,8300)
     plot.show()
