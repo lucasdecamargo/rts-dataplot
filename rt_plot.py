@@ -11,24 +11,36 @@
 
 import matplotlib.pyplot as plt
 
+colors = ['r.', 'b.', 'g.', 'k.', 'y.', 'c.', 'm.']
+
 class OutputData:
     def __init__(self):
         self.data = []
 
     def getData(self):
         x = []
-        y = []
-        for d in self.data:         
-            if(d[1] == 'a'):
-                x.append(d[0])
-                y.append(3)
-            elif(d[1] == 'b'):
-                x.append(d[0])
-                y.append(2)
-            elif(d[1] == 'c'):
-                x.append(d[0])
-                y.append(1)
-        return x,y
+        Y = []
+        i = 0
+        c = []
+        for d in self.data:
+            # x.append(d[0])
+
+            if d[1] in [e[0] for e in c]:
+                for e in c:
+                    if d[1] == e[0]:
+                        x[e[1]].append(d[0])
+                        Y[e[1]].append(Y[e[1]][0][1])
+
+            else:
+                c.append((d[1],i))
+                x.append([])
+                Y.append([])
+                Y[i].append((d[1],i))
+                Y[i].append(Y[i][0][1])
+                x[i].append(d[0])
+                i += 1
+        
+        return x,Y
 
     def exportFile(self, fname, mode=0):
         if(mode == 0):
@@ -54,7 +66,6 @@ class OutputFile(OutputData):
         self.crop()
 
     def crop(self):
-        output = []
         with open(self.fname,'r') as f:
             while(True):
                 line = f.readline()
@@ -68,8 +79,11 @@ class OutputFile(OutputData):
                 else:
                     thread = temp
 
-                if(lnumber.isdigit() and thread[0].isalpha()):
-                    self.data.append((int(lnumber),thread[0]))
+                try:
+                    if lnumber.isdigit():
+                        self.data.append((int(lnumber),thread[0] if thread[0].isalpha() else int(thread)))
+                except:
+                    print("Could not append ",lnumber,"; ",thread)
 
 
 
@@ -82,7 +96,6 @@ class OutputRawFile(OutputData):
         self.crop()
 
     def crop(self):
-        output = []
         with open(self.fname,'r') as f:
             while(True):
                 line = f.readline()
@@ -108,8 +121,11 @@ class OutputRawFile(OutputData):
 
                 lnumber,sep,temp = line.partition('\t')
                 thread,sep,temp = temp.partition('\t')
-                if(lnumber.isdigit() and thread.isalpha()):
-                    self.data.append((int(lnumber),thread))
+                try:
+                    if lnumber.isdigit():
+                        self.data.append((int(lnumber),thread[0] if thread[0].isalpha() else int(thread)))
+                except:
+                    print("Could not append ",lnumber,"; ",thread)
 
 
 class MatPlotter:
@@ -125,21 +141,75 @@ class MatPlotter:
         if(len(self.data) ==  1):
             if(x_s != 0):
                 plt.xlim(x_i,x_s)
-            plt.plot(self.data[0][0][0],self.data[0][0][1], 'r.')
+            
+            yt1 = ()
+            yt2 = ()
+            for i in range(len(self.data[0][0][1])):
+                plt.plot(self.data[0][0][0][i],self.data[0][0][1][i][1:], colors[i])
+                yt1 += (self.data[0][0][1][i][0][1],)
+                yt2 += (self.data[0][0][1][i][0][0],)
+
+                proc = []
+                for p in self.data[0][0][1][i][1:]:
+                    proc.append(-1)
+
+                plt.plot(self.data[0][0][0][i],proc, colors[i])
+                
+
             plt.ylabel(self.data[0][1])
             plt.grid(b=True, which='major', color='#909090', linestyle='-')
             plt.minorticks_on()
             plt.grid(b=True, which='minor', color='#999999', linestyle='-', alpha=0.2)
 
+            yt1 += (-1,)
+            yt2 += ('P',)
+
+            plt.yticks(yt1,yt2)
+
         elif(len(self.data) ==  2):     
-            f, (ax1, ax2) = plt.subplots(2, 1, sharey=True)
-            ax1.plot(self.data[0][0][0],self.data[0][0][1], 'r.')
+            f, (ax1, ax2) = plt.subplots(2, 1)
+
+            yt1 = ()
+            yt2 = ()
+            for i in range(len(self.data[0][0][1])):
+                ax1.plot(self.data[0][0][0][i],self.data[0][0][1][i][1:], colors[i])
+                yt1 += (self.data[0][0][1][i][0][1],)
+                yt2 += (self.data[0][0][1][i][0][0],)
+
+                proc = []
+                for p in self.data[0][0][1][i][1:]:
+                    proc.append(-1)
+
+                ax1.plot(self.data[0][0][0][i],proc, colors[i])
+
+            yt1 += (-1,)
+            yt2 += ('P',)
+            plt.sca(ax1)
+            plt.yticks(yt1,yt2)
+
             ax1.set_ylabel(self.data[0][1])
             ax1.grid(b=True, which='major', color='#909090', linestyle='-')
             ax1.minorticks_on()
             ax1.grid(b=True, which='minor', color='#999999', linestyle='-', alpha=0.2)
 
-            ax2.plot(self.data[1][0][0],self.data[1][0][1], 'b.')
+            yt1 = ()
+            yt2 = ()
+            for i in range(len(self.data[1][0][1])):
+                ax2.plot(self.data[1][0][0][i],self.data[1][0][1][i][1:], colors[i])
+                yt1 += (self.data[1][0][1][i][0][1],)
+                yt2 += (self.data[1][0][1][i][0][0],)
+
+                proc = []
+                for p in self.data[1][0][1][i][1:]:
+                    proc.append(-1)
+
+                ax2.plot(self.data[1][0][0][i],proc, colors[i])
+
+            yt1 += (-1,)
+            yt2 += ('P',)
+            plt.sca(ax2)
+            plt.yticks(yt1,yt2)
+
             ax2.set_ylabel(self.data[1][1])
             ax2.grid(b=True, which='major', color='#909090', linestyle='-')
             ax2.minorticks_on()
@@ -149,12 +219,12 @@ class MatPlotter:
                 ax1.set_xlim(x_i,x_s) 
                 ax2.set_xlim(x_i,x_s)
 
-        plt.yticks((1,2,3),('c','b','a'))        
         MatPlotter.maximize()
 
     def show(self):
         plt.show()
 
+    @staticmethod
     def maximize():
         plot_backend = plt.get_backend()
         mng = plt.get_current_fig_manager()
@@ -168,21 +238,15 @@ class MatPlotter:
             mng.window.showMaximized()
 
 if __name__=="__main__":    
-    f_rm = OutputRawFile("rt_rm_output")
-    f_edf = OutputRawFile("rt_edf_output")
+    f1 = OutputRawFile("polling_server_output")
+    f2 = OutputRawFile("rt_rm_output")
 
     plot = MatPlotter()
 
     # Voce pode dicionar um ou dois arquivos no mesmo grafico.
     # Nao implementei pra mais que 2!
-    plot.add_data(f_rm.getData(),"RM")
-    plot.add_data(f_edf.getData(),"EDF")
+    plot.add_data(f1.getData(),"Polling Server")
+    plot.add_data(f2.getData(),"Rate Monotonic")
     
-    plot.plot(0,500)
-    plot.show()
-
-    plot.plot(5800,6300)
-    plot.show()
-
-    plot.plot(7800,8300)
+    plot.plot(0,2500)
     plot.show()
