@@ -11,7 +11,7 @@
 import matplotlib.pyplot as plt
 
 ignore = ['M','A','B','C']
-colors = ['r.', 'b.', 'g.', 'k.', 'y.', 'c.', 'm.']
+colors = ['r.', 'b.', 'g.', 'k.', 'y.', 'c.', 'm.', 'r.', 'b.', 'g.', 'k.', 'y.', 'c.', 'm.', 'r.', 'b.', 'g.', 'k.', 'y.', 'c.', 'm.']
 
 class OutputData:
     def __init__(self):
