@@ -8,9 +8,9 @@
 # --------------------------------------------------------------------------------------
 # Autor: Lucas de Camargo Souza
 ########################################################################################
-
 import matplotlib.pyplot as plt
 
+ignore = ['M','A','B','C']
 colors = ['r.', 'b.', 'g.', 'k.', 'y.', 'c.', 'm.']
 
 class OutputData:
@@ -23,22 +23,24 @@ class OutputData:
         i = 0
         c = []
         for d in self.data:
-            # x.append(d[0])
-
-            if d[1] in [e[0] for e in c]:
-                for e in c:
-                    if d[1] == e[0]:
-                        x[e[1]].append(d[0])
-                        Y[e[1]].append(Y[e[1]][0][1])
+            if d[1] in ignore:
+                pass
 
             else:
-                c.append((d[1],i))
-                x.append([])
-                Y.append([])
-                Y[i].append((d[1],i))
-                Y[i].append(Y[i][0][1])
-                x[i].append(d[0])
-                i += 1
+                if d[1] in [e[0] for e in c]:
+                    for e in c:
+                        if d[1] == e[0]:
+                            x[e[1]].append(d[0])
+                            Y[e[1]].append(Y[e[1]][0][1])
+
+                else:
+                    c.append((d[1],i))
+                    x.append([])
+                    Y.append([])
+                    Y[i].append((d[1],i))
+                    Y[i].append(Y[i][0][1])
+                    x[i].append(d[0])
+                    i += 1
         
         return x,Y
 
@@ -52,7 +54,6 @@ class OutputData:
         elif(mode == 1):
             with open(fname, 'w') as f:
                 f.write(str(self.data))
-
 
 # Use esta classe para um arquivo de saida do tipo:
 # 0 C
